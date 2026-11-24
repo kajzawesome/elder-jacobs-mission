@@ -89,6 +89,11 @@ article.anim-next { animation:inR .28s ease-out; } article.anim-prev { animation
 @keyframes inR { from { opacity:0; transform:translateX(40px);} to { opacity:1; transform:none; } }
 @keyframes inL { from { opacity:0; transform:translateX(-40px);} to { opacity:1; transform:none; } }
 @media (prefers-reduced-motion: reduce) { article.anim-next, article.anim-prev { animation:none; } }
+.langs { display:flex; gap:6px; padding:2px 0 12px; font:500 13px Inter,sans-serif; }
+.langs a { padding:5px 11px; border-radius:999px; color:var(--muted); text-decoration:none; border:1px solid var(--rule); }
+.langs a:hover { color:var(--ink); }
+.langs a.on { color:var(--ink); background:var(--accent-soft); border-color:transparent; }
+.drawer.searching .langs { display:none; }
 .tnote { font-style:italic; color:var(--muted); font-size:17px; margin:-6px 0 18px; }
 .kicker { font-family:Inter,sans-serif; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
 h1 { font-family:'Cormorant Garamond','Noto Color Emoji',serif; font-weight:600; font-size:38px; line-height:1.12; margin:8px 0 20px; padding-bottom:18px; border-bottom:1px solid var(--rule); }
@@ -368,6 +373,7 @@ article.split::after { grid-column:1 / -1; }
 <aside class="drawer" id="drawer" aria-label="Contents">
   <div class="dh">
     <div class="dh-top"><b id="dTitle">Contents</b><button class="icon-btn" id="closeBtn" aria-label="Close menu"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <nav class="langs" aria-label="Language"><a href="./" data-l="en" hreflang="en">English</a><a href="es.html" data-l="es" hreflang="es">Español</a><a href="pt.html" data-l="pt" hreflang="pt-BR">Português</a></nav>
     <div class="sonly">
     <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
       <input id="q" type="search" placeholder="Search letters, names, places…" autocomplete="off"></label>
@@ -763,6 +769,11 @@ function galleryHTML(gp) {
     (und.length ? sec('gx', 'Undated', 'Photos without a date', und) : '');
 }
 $('art').addEventListener('click', e => { const a = e.target.closest('.gnav a'); if (!a) return; e.preventDefault(); const t = $('art').querySelector(a.getAttribute('href')); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+
+/* language links: open the same page in the other language */
+(() => { const lang = (document.documentElement.lang || 'en').slice(0, 2), local = /reader(\.\w+)?\.html$/.test(location.pathname);
+  const F = local ? { en: 'reader.html', es: 'reader.es.html', pt: 'reader.pt.html' } : { en: './', es: 'es.html', pt: 'pt.html' };
+  document.querySelectorAll('.langs a').forEach(a => { a.classList.toggle('on', a.dataset.l === lang); a.onclick = e => { e.preventDefault(); location.href = F[a.dataset.l] + location.hash; }; }); })();
 
 /* light / dark */
 const mqDark = matchMedia('(prefers-color-scheme: dark)');
